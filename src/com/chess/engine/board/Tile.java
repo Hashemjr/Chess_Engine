@@ -3,12 +3,11 @@ import com.chess.engine.pieces.Piece;
 import java.util.Map;
 import java.util.HashMap;
 import com.google.common.collect.ImmutableMap;
-
 public abstract class Tile {
 
     protected final int tileCoordinate;     // member field representing tile number
 
-    private static final Map<Integer, EmptyTile> EMPTY_TILES = createAllPossibleEmptyTiles();
+    private static final Map<Integer, EmptyTile> EMPTY_TILES_CACHE = createAllPossibleEmptyTiles();
 
 
     // Every possible empty tile that could ever exist I have created upfront
@@ -24,7 +23,7 @@ public abstract class Tile {
 
     // factory method
     public static Tile createTile(final int tileCoordinate, final Piece piece){
-        return piece != null ? new OccupiedTile(tileCoordinate,piece) : EMPTY_TILES.get(tileCoordinate);
+        return piece != null ? new OccupiedTile(tileCoordinate,piece) : EMPTY_TILES_CACHE.get(tileCoordinate);
     }
 
     private Tile(int tileCoordinate){
@@ -37,7 +36,7 @@ public abstract class Tile {
     // subclass
     public static final class EmptyTile extends Tile{
 
-        public EmptyTile(final int coordinate){
+        private EmptyTile(final int coordinate){
             super(coordinate);
         }
 
@@ -56,7 +55,7 @@ public abstract class Tile {
     public static final class OccupiedTile extends Tile{
         private final Piece pieceOnTile;
 
-        public OccupiedTile(int coordinate, Piece pieceOnTile){
+        private OccupiedTile(int coordinate, Piece pieceOnTile){
             super(coordinate);
             this.pieceOnTile = pieceOnTile;
         }
